@@ -28,8 +28,8 @@ const Sidebar = () => {
     // handler function to handle the visibility of the color buttons
     const addNoteButtonHandler = () => {
         animate([
-            ['#add-button', {rotate: 90, y: '-10px'}, {duration: 0.2}],
-            ['#add-button', {rotate: 180, y: '0px'}, {duration: 0.2}],
+            ['#add-button', {rotate: isOpen ? -90 : 90, y: '-10px'}, {duration: 0.2}],
+            ['#add-button', {rotate: isOpen ? -180 : 180, y: '0px'}, {duration: 0.2}],
             ['#add-button', {rotate: 0,}, {duration: 0.000001, at: 0.4}]
         ]);
 
