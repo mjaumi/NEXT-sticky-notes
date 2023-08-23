@@ -1,6 +1,6 @@
 import './globals.css'
 import type { Metadata } from 'next'
-import { Inter, Poppins } from 'next/font/google'
+import { Poppins } from 'next/font/google'
 
 // defining the font family here
 const poppins = Poppins({
@@ -25,7 +25,7 @@ export default function RootLayout({
   // rendering the layout of the web application here
   return (
     <html lang='en' className={`${poppins.variable}`}>
-      <body className='font-poppins'>
+      <body className='font-poppins text-sticky-black'>
         {children}
       </body>
     </html>
