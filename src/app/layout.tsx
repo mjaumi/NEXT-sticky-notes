@@ -1,7 +1,9 @@
 import Providers from '@/redux/Providers';
 import './globals.css';
+import 'react-toastify/dist/ReactToastify.css';
 import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
+import { ToastContainer } from 'react-toastify';
 
 // defining the font family here
 const poppins = Poppins({
@@ -27,6 +29,7 @@ export default function RootLayout({
     <html lang='en' className={`${poppins.variable}`}>
       <body className='font-poppins text-sticky-black'>
         <Providers>{children}</Providers>
+        <ToastContainer position='top-center' />
       </body>
     </html>
   );

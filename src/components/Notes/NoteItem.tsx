@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 import { useAppDispatch } from '@/redux/hooks';
 import { removeNewNote } from '@/redux/features/note/noteSlice';
 import { useUpdateNoteMutation } from '@/redux/features/note/noteApi';
+import { toast } from 'react-toastify';
 
 const NoteItem = ({ note }: { note: Note }) => {
   // destructuring the note object here
@@ -50,11 +51,15 @@ const NoteItem = ({ note }: { note: Note }) => {
   };
 
   if (isSuccess) {
-    console.log('SUCCESS!!');
+    toast.success('Note Updated Successfully!!', {
+      toastId: 'stared-success',
+    });
   }
 
   if (isError) {
-    console.log('ERROR!!');
+    toast.error('Failed Update The Note!!', {
+      toastId: 'stared-error',
+    });
   }
 
   // rendering note item card component here
