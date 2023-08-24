@@ -1,3 +1,4 @@
+import { socket } from '@/lib/socketConnection';
 import { apiSlice } from '../api/apiSlice';
 import { notesApi } from '../notes/notesApi';
 
@@ -23,6 +24,10 @@ export const noteApi = apiSlice.injectEndpoints({
                 const { data: updatedNote } = await queryFulfilled;
 
                 if (updatedNote.status === 'success') {
+
+                    // emitting note updated event to inform the server here 
+                    socket.emit('note-updated', true);
+
                     dispatch(notesApi.util.updateQueryData('getNotes', null,
                         (draftNote) => {
                             const updatedNoteIndex = draftNote.findIndex(note => note._id === noteId);

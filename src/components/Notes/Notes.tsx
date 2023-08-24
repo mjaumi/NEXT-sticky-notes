@@ -4,10 +4,16 @@ import React from 'react';
 import NoteItem from './NoteItem';
 import { useGetNotesQuery } from '@/redux/features/notes/notesApi';
 import { useAppSelector } from '@/redux/hooks';
+import { socket } from '@/lib/socketConnection';
 
 const Notes = () => {
   // integration of RTK Query hooks here
-  const { data: notes } = useGetNotesQuery(null);
+  const { data: notes, refetch } = useGetNotesQuery(null);
+
+  // refetching the notes when the socket io is emitting updated note
+  socket.on('receive-updated-note', () => {
+    refetch();
+  });
 
   // integration or react-redux custom hooks here
   const noteData = useAppSelector((state) => state.note);

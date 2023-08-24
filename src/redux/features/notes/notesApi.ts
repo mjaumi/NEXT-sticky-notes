@@ -12,4 +12,5 @@ export const notesApi = apiSlice.injectEndpoints({
 
 export const {
     useGetNotesQuery,
+    useLazyGetNotesQuery,
 } = notesApi;

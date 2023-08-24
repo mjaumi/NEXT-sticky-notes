@@ -4,6 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
 import { ToastContainer } from 'react-toastify';
+import { socket } from '@/lib/socketConnection';
 
 // defining the font family here
 const poppins = Poppins({
@@ -24,6 +25,11 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // connecting socket here
+  socket.on('connect', () => {
+    console.log('connection ID: ', socket.id);
+  });
+
   // rendering the layout of the web application here
   return (
     <html lang='en' className={`${poppins.variable}`}>

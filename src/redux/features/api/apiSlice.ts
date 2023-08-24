@@ -4,7 +4,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 export const apiSlice = createApi({
     reducerPath: 'stickyNotesAPI',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'http://localhost:9000',
+        baseUrl: process.env.NEXT_PUBLIC_API_URL,
     }),
     tagTypes: [],
     endpoints: builder => ({}),
