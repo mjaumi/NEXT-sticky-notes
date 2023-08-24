@@ -1,3 +1,4 @@
+import Providers from '@/redux/Providers';
 import './globals.css';
 import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
@@ -24,7 +25,9 @@ export default function RootLayout({
   // rendering the layout of the web application here
   return (
     <html lang='en' className={`${poppins.variable}`}>
-      <body className='font-poppins text-sticky-black'>{children}</body>
+      <body className='font-poppins text-sticky-black'>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }
