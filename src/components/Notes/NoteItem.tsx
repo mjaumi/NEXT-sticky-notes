@@ -3,10 +3,16 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MdModeEdit } from 'react-icons/md';
 import { AiFillStar } from 'react-icons/ai';
+import { motion } from 'framer-motion';
+import { useAppDispatch } from '@/redux/hooks';
+import { removeNewNote } from '@/redux/features/note/noteSlice';
 
 const NoteItem = ({ note }: { note: Note }) => {
   // destructuring the note object here
-  const { noteText, bgColor, isStared, createdAt } = note;
+  const { id, noteText, bgColor, isStared, createdAt } = note;
+
+  // integration of custom react-redux hooks here
+  const dispatch = useAppDispatch();
 
   // integration of react hooks here
   const [isEdit, setIsEdit] = useState<boolean>(false);
@@ -23,13 +29,24 @@ const NoteItem = ({ note }: { note: Note }) => {
   // handler function to handle the edit button click events
   const editNoteButtonHandler = () => {
     setIsEdit((isEdit) => !isEdit);
+    dispatch(removeNewNote());
   };
 
   // rendering note item card component here
   return (
-    <div
+    <motion.div
+      initial={{ scale: 0 }}
+      animate={{ scale: 1 }}
+      exit={{ scale: 0 }}
+      layoutId={id}
+      transition={{
+        duration: 2,
+        type: 'spring',
+        stiffness: 200,
+        damping: 15,
+      }}
       style={{ backgroundColor: bgColor }}
-      className='group flex flex-col justify-between h-[350px] rounded-3xl px-6 py-8 font-medium'
+      className='group flex flex-col justify-between h-[350px] rounded-3xl px-6 py-8 font-medium overflow-x-hidden'
     >
       <div className='h-full mb-5'>
         {!isEdit ? (
@@ -65,7 +82,7 @@ const NoteItem = ({ note }: { note: Note }) => {
           </button>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

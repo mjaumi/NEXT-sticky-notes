@@ -1,9 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
+import noteReducer from '../features/note/noteSlice';
 
 // configuring the redux store here
 export const store = configureStore({
     reducer: {
-
+        note: noteReducer,
     },
     devTools: process.env.NODE_ENV !== 'production',
 

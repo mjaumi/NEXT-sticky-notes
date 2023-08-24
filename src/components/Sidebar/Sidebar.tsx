@@ -21,6 +21,7 @@ const Sidebar = () => {
 
   // integration of react hooks here
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [hasAnimFinished, setHasAnimFinished] = useState<boolean>(false);
 
   // defining the buttons color codes here
   const colorCodes: string[] = [
@@ -59,14 +60,22 @@ const Sidebar = () => {
         <button
           id='add-button'
           onClick={addNoteButtonHandler}
-          className='bg-sticky-black text-white rounded-full p-1'
+          className='bg-sticky-black text-white rounded-full p-1 z-20'
         >
           <BsPlus className='w-8 h-8' />
         </button>
         <motion.div
           variants={containerVariants}
           animate={isOpen ? 'open' : 'closed'}
-          className='mt-8 flex flex-col items-center'
+          onAnimationStart={() => {
+            setHasAnimFinished(false);
+          }}
+          onAnimationComplete={() => {
+            !isOpen && setHasAnimFinished(true);
+          }}
+          className={`mt-8 flex flex-col items-center ${
+            hasAnimFinished && 'hidden'
+          }`}
         >
           {colorCodes.map((color: string) => (
             <AddNoteColorButton key={color} bgColor={color} />
