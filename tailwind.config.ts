@@ -19,6 +19,7 @@ const config: Config = {
         "sticky-purple": "#B78FFF",
         "sticky-indigo": "#00D3FF",
         "sticky-green": "#E4EF88",
+        "sticky-golden": "#FFCF00",
       },
     },
   },

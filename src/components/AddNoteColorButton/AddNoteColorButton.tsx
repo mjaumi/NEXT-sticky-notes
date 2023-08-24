@@ -25,7 +25,7 @@ const AddNoteColorButton = ({bgColor}: {bgColor: string}) => {
     return (
         <motion.button 
             variants={colorBtnVariants}
-            style={{backgroundColor: bgColor}} className='mb-5 p-2 rounded-full'
+            style={{backgroundColor: bgColor}} className='mb-5 p-2 rounded-full opacity-0'
         />
     );
 };

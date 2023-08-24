@@ -38,7 +38,7 @@ const Sidebar = () => {
 
     // rendering the sidebar component here
     return (
-        <aside className='border-r w-28 px-3 py-5'>
+        <aside className='sticky top-0 border-r w-28 px-3 py-5 h-screen'>
             <p className='text-center font-semibold'>Sticky</p>
             
             <div ref={scope}  className='pt-14 flex flex-col items-center'>
