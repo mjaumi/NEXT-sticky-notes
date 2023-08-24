@@ -4,8 +4,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { MdModeEdit, MdDone } from 'react-icons/md';
 import { AiFillStar } from 'react-icons/ai';
 import { motion } from 'framer-motion';
-import { useAppDispatch } from '@/redux/hooks';
-import { removeNewNote } from '@/redux/features/note/noteSlice';
 import { useUpdateNoteMutation } from '@/redux/features/note/noteApi';
 import { toast } from 'react-toastify';
 
@@ -16,10 +14,8 @@ const NoteItem = ({ note }: { note: Note }) => {
   // integration of RTK Query hooks here
   const [updateNote, { isSuccess, isError }] = useUpdateNoteMutation();
 
-  // integration of custom react-redux hooks here
-  const dispatch = useAppDispatch();
-
   // integration of react hooks here
+  const [textareaText, setTextAreaText] = useState<string>(noteText);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -31,10 +27,35 @@ const NoteItem = ({ note }: { note: Note }) => {
     }
   }, [isEdit]);
 
+  // showing notification using toasts to the user here
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success('Note Updated Successfully!!', {
+        toastId: 'update-success',
+      });
+    }
+
+    if (isError) {
+      toast.error('Failed Update The Note!!', {
+        toastId: 'update-error',
+      });
+    }
+  }, [isError, isSuccess]);
+
   // handler function to handle the edit button click events
   const editNoteButtonHandler = () => {
+    if (isEdit && noteText !== textareaText) {
+      const noteToUpdate: Note = {
+        ...note,
+        noteText: textareaText,
+      };
+
+      updateNote({
+        noteId: _id,
+        data: noteToUpdate,
+      });
+    }
     setIsEdit((isEdit) => !isEdit);
-    dispatch(removeNewNote()); // [TEMPORARY]
   };
 
   // handler function to handle note staring functionality
@@ -49,18 +70,6 @@ const NoteItem = ({ note }: { note: Note }) => {
       data: noteToUpdate,
     });
   };
-
-  if (isSuccess) {
-    toast.success('Note Updated Successfully!!', {
-      toastId: 'stared-success',
-    });
-  }
-
-  if (isError) {
-    toast.error('Failed Update The Note!!', {
-      toastId: 'stared-error',
-    });
-  }
 
   // rendering note item card component here
   return (
@@ -87,6 +96,7 @@ const NoteItem = ({ note }: { note: Note }) => {
             className='bg-transparent w-full h-full text-lg outline-none resize-none'
             name='note-textarea'
             defaultValue={noteText}
+            onChange={(e) => setTextAreaText(e.target.value)}
           ></textarea>
         )}
       </div>
