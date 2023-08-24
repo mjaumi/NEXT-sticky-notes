@@ -1,4 +1,4 @@
-// defining the Note data type here
+// defining the Note datatype here
 type Note = {
   _id: string;
   noteText: string;
@@ -7,3 +7,9 @@ type Note = {
   category: string;
   bgColor: string;
 };
+
+// defining the add/update result datatype here
+type Result = {
+  status: 'success' | 'error',
+  body: Note,
+}

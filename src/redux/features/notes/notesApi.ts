@@ -1,5 +1,6 @@
 import { apiSlice } from '../api/apiSlice';
 
+// initializing the notes APIs here
 export const notesApi = apiSlice.injectEndpoints({
     endpoints: builder => ({
         // GET query to get all the notes from the server

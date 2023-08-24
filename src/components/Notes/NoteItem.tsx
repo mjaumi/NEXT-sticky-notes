@@ -1,15 +1,19 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { MdModeEdit } from 'react-icons/md';
+import { MdModeEdit, MdDone } from 'react-icons/md';
 import { AiFillStar } from 'react-icons/ai';
 import { motion } from 'framer-motion';
 import { useAppDispatch } from '@/redux/hooks';
 import { removeNewNote } from '@/redux/features/note/noteSlice';
+import { useUpdateNoteMutation } from '@/redux/features/note/noteApi';
 
 const NoteItem = ({ note }: { note: Note }) => {
   // destructuring the note object here
   const { _id, noteText, bgColor, isStared, createdAt } = note;
+
+  // integration of RTK Query hooks here
+  const [updateNote, { isSuccess, isError }] = useUpdateNoteMutation();
 
   // integration of custom react-redux hooks here
   const dispatch = useAppDispatch();
@@ -29,8 +33,29 @@ const NoteItem = ({ note }: { note: Note }) => {
   // handler function to handle the edit button click events
   const editNoteButtonHandler = () => {
     setIsEdit((isEdit) => !isEdit);
-    dispatch(removeNewNote());
+    dispatch(removeNewNote()); // [TEMPORARY]
   };
+
+  // handler function to handle note staring functionality
+  const starButtonHandler = () => {
+    const noteToUpdate: Note = {
+      ...note,
+      isStared: !note.isStared,
+    };
+
+    updateNote({
+      noteId: _id,
+      data: noteToUpdate,
+    });
+  };
+
+  if (isSuccess) {
+    console.log('SUCCESS!!');
+  }
+
+  if (isError) {
+    console.log('ERROR!!');
+  }
 
   // rendering note item card component here
   return (
@@ -66,6 +91,7 @@ const NoteItem = ({ note }: { note: Note }) => {
         </div>
         <div>
           <button
+            onClick={starButtonHandler}
             className={`bg-sticky-black  p-3 rounded-full hover:scale-125 mr-3 ${
               isStared
                 ? 'text-sticky-golden'
@@ -78,7 +104,11 @@ const NoteItem = ({ note }: { note: Note }) => {
             onClick={editNoteButtonHandler}
             className='bg-sticky-black text-white p-3 rounded-full hover:scale-125 duration-300'
           >
-            <MdModeEdit className='w-5 h-5' />
+            {isEdit ? (
+              <MdDone className='w-5 h-5' />
+            ) : (
+              <MdModeEdit className='w-5 h-5' />
+            )}
           </button>
         </div>
       </div>
