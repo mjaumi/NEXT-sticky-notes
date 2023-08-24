@@ -9,7 +9,7 @@ import { removeNewNote } from '@/redux/features/note/noteSlice';
 
 const NoteItem = ({ note }: { note: Note }) => {
   // destructuring the note object here
-  const { id, noteText, bgColor, isStared, createdAt } = note;
+  const { _id, noteText, bgColor, isStared, createdAt } = note;
 
   // integration of custom react-redux hooks here
   const dispatch = useAppDispatch();
@@ -38,7 +38,7 @@ const NoteItem = ({ note }: { note: Note }) => {
       initial={{ scale: 0 }}
       animate={{ scale: 1 }}
       exit={{ scale: 0 }}
-      layoutId={id}
+      layoutId={_id}
       transition={{
         duration: 2,
         type: 'spring',
