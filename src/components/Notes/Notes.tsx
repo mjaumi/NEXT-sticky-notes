@@ -1,12 +1,14 @@
+'use client';
+
 import React from 'react';
 import NoteItem from './NoteItem';
 import getNotes from '../../lib/getNotes';
 import NotesContainer from './NotesContainer';
+import { useGetNotesQuery } from '@/redux/features/notes/notesApi';
 
-const Notes = async () => {
-  // getting fake data from local server here [TEMPORARY]
-  const notesData: Promise<Note[]> = getNotes();
-  const notes = await notesData;
+const Notes = () => {
+  // integration of RTK Query hooks here
+  const { data: notes } = useGetNotesQuery(null);
 
   // rendering the notes container component here
   return (

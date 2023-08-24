@@ -4,7 +4,7 @@ import React from 'react';
 import NoteItem from './NoteItem';
 import { useAppSelector } from '@/redux/hooks';
 
-const NotesContainer = ({ notes }: { notes: Array<Note> }) => {
+const NotesContainer = ({ notes }: { notes: Array<Note> | undefined }) => {
   // integration or react-redux custom hooks here
   const noteData = useAppSelector((state) => state.note);
 
@@ -12,7 +12,7 @@ const NotesContainer = ({ notes }: { notes: Array<Note> }) => {
   return (
     <div className='mt-20 grid grid-cols-4 gap-12'>
       {noteData.note && <NoteItem note={noteData.note} />}
-      {notes.map((note) => (
+      {notes?.map((note) => (
         <NoteItem key={note.id} note={note} />
       ))}
     </div>
