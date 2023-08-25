@@ -14,6 +14,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { removeNewNote } from '@/redux/features/note/noteSlice';
 import isEmptyOrWhitespace from '@/lib/isEmptyOrWhitespace';
 import moment from 'moment';
+import { socket } from '@/lib/socketConnection';
 
 const NoteItem = ({ note, isNew }: { note: Note; isNew: boolean }) => {
   // destructuring the note object here
@@ -21,8 +22,8 @@ const NoteItem = ({ note, isNew }: { note: Note; isNew: boolean }) => {
 
   // integration of RTK Query hooks here
   const [updateNote, updateMutationFlags] = useUpdateNoteMutation();
-  const [deleteNote, deleteMutationFlags] = useDeleteNoteMutation();
-  const [addNote, addMutationFlags] = useAddNoteMutation();
+  const [deleteNote] = useDeleteNoteMutation();
+  const [addNote] = useAddNoteMutation();
 
   // integration of react-redux hooks here
   const { note: newNote } = useAppSelector((state) => state.note);
@@ -54,23 +55,9 @@ const NoteItem = ({ note, isNew }: { note: Note; isNew: boolean }) => {
         toastId: 'update-error',
       });
     }
+  }, [updateMutationFlags]);
 
-    if (deleteMutationFlags.isSuccess) {
-      toast.success('Note Deleted Successfully!!', {
-        toastId: 'delete-success',
-      });
-    }
-
-    if (deleteMutationFlags.isError) {
-      toast.error('Failed To Delete The Note!!', {
-        toastId: 'delete-error',
-      });
-    }
-  }, [deleteMutationFlags, updateMutationFlags]);
-
-  if (addMutationFlags.isSuccess) {
-    console.log('Success');
-  }
+  // console.log(updateMutationFlags);
 
   // handler function to handle the add button click events
   const addNoteButtonHandler = () => {
@@ -83,15 +70,38 @@ const NoteItem = ({ note, isNew }: { note: Note; isNew: boolean }) => {
         createdAt: moment().format('LL'),
       };
 
-      addNote(noteToAdd);
+      addNote(noteToAdd)
+        .unwrap()
+        .then((result) => {
+          if (result.status === 'success') {
+            toast.success('Note Added Successfully!!', {
+              toastId: 'add-success',
+            });
+          } else {
+            toast.error('Failed To Add The Note!!', {
+              toastId: 'add-error',
+            });
+          }
+          dispatch(removeNewNote());
+        });
     }
-
-    dispatch(removeNewNote());
   };
 
   // handler function to handle the delete button click events
   const deleteNoteButtonHandler = (noteId: string) => {
-    deleteNote(noteId);
+    deleteNote(noteId)
+      .unwrap()
+      .then((result) => {
+        if (result.status === 'success') {
+          toast.success('Note Deleted Successfully!!', {
+            toastId: 'delete-success',
+          });
+        } else {
+          toast.error('Failed To Delete The Note!!', {
+            toastId: 'delete-error',
+          });
+        }
+      });
   };
 
   // handler function to handle the edit button click events

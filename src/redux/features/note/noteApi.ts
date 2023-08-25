@@ -67,10 +67,12 @@ export const noteApi = apiSlice.injectEndpoints({
                 );
 
                 try {
-                    await queryFulfilled;
+                    const { data } = await queryFulfilled;
 
-                    // emitting note deleted event to inform the server here 
-                    socket.emit('note-deleted', true);
+                    // emitting note deleted event to inform the server here
+                    if (data.status === 'success') {
+                        socket.emit('note-deleted', true);
+                    }
                 } catch (error) {
                     deleteResult.undo();
                 }
