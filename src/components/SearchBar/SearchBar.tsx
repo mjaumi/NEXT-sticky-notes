@@ -1,7 +1,19 @@
-import React from 'react';
+'use client';
+
+import { searchNotes } from '@/redux/features/search/searchSlice';
+import { useAppDispatch } from '@/redux/hooks';
+import React, { useState } from 'react';
 import { HiSearch } from 'react-icons/hi';
 
 const SearchBar = () => {
+  // integration of react-redux hooks here
+  const dispatch = useAppDispatch();
+
+  // handler function to handle search note functionality
+  const searchBarHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(searchNotes(event.target.value));
+  };
+
   // rendering search bar component here
   return (
     <div className='fixed xl:block top-0 py-5 w-full bg-white border-b px-5 md:px-10 2xl:px-20'>
@@ -12,6 +24,7 @@ const SearchBar = () => {
         <input
           className='bg-transparent w-full xl:w-[400px] outline-none font-medium'
           type='text'
+          onChange={searchBarHandler}
           placeholder='Search notes...'
         />
       </div>

@@ -20,6 +20,14 @@ const Notes = () => {
 
   // integration or react-redux custom hooks here
   const noteData = useAppSelector((state) => state.note);
+  const searchData = useAppSelector((state) => state.search);
+
+  // handler function to filter notes by search
+  const searchNotesHandler = (note: Note) => {
+    return note.noteText
+      .toLowerCase()
+      .includes(searchData.searchText.toLowerCase());
+  };
 
   // rendering the notes container component here
   return (
@@ -34,6 +42,7 @@ const Notes = () => {
           {notes &&
             [...notes]
               .reverse()
+              .filter(searchNotesHandler)
               .map((note) => (
                 <NoteItem key={note._id} note={note} isNew={false} />
               ))}
