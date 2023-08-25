@@ -83,6 +83,7 @@ const NoteItem = ({ note, isNew }: { note: Note; isNew: boolean }) => {
             });
           }
           dispatch(removeNewNote());
+          socket.emit('note-added', true);
         });
     }
   };
