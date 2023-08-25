@@ -80,10 +80,12 @@ const NoteItem = ({ note, isNew }: { note: Note; isNew: boolean }) => {
               toastId: 'add-error',
             });
           }
-          dispatch(removeNewNote());
+          // dispatch(removeNewNote());
           socket.emit('note-added', true);
         });
     }
+
+    dispatch(removeNewNote());
   };
 
   // handler function to handle the delete button click events
