@@ -8,11 +8,13 @@ import { socket } from '@/lib/socketConnection';
 
 const Notes = () => {
   // integration of RTK Query hooks here
-  const { data: notes, refetch } = useGetNotesQuery(null);
+  const { data: notes, isUninitialized, refetch } = useGetNotesQuery(null);
 
   // refetching the notes when the socket io is emitting updated note
   socket.onAny(() => {
-    refetch();
+    if (!isUninitialized) {
+      refetch();
+    }
   });
 
   // integration or react-redux custom hooks here
@@ -24,10 +26,13 @@ const Notes = () => {
       <div className='pt-20'>
         <h1 className='text-5xl font-semibold'>Notes</h1>
         <div className='mt-20 grid grid-cols-4 gap-12'>
-          {noteData.note && <NoteItem note={noteData.note} />}
-          {notes?.map((note) => (
-            <NoteItem key={note._id} note={note} />
-          ))}
+          {noteData.note && <NoteItem note={noteData.note} isNew />}
+          {notes &&
+            [...notes]
+              .reverse()
+              .map((note) => (
+                <NoteItem key={note._id} note={note} isNew={false} />
+              ))}
         </div>
       </div>
     </section>

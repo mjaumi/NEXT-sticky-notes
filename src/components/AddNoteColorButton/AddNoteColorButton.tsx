@@ -30,9 +30,8 @@ const AddNoteColorButton = ({ bgColor }: { bgColor: string }) => {
   // handler function to add new note on click add note color button
   const addNoteBtnHandler = () => {
     const newNote: Note = {
-      _id: '10005',
-      noteText: 'The beginning of screenless',
-      createdAt: 'August 23, 2023',
+      noteText: '',
+      createdAt: '',
       isStared: false,
       category: '',
       bgColor,

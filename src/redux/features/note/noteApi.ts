@@ -11,6 +11,16 @@ interface IUpdateNote {
 // initializing the note APIs here
 export const noteApi = apiSlice.injectEndpoints({
     endpoints: builder => ({
+        // POST mutation to create a new note to the server
+        addNote: builder.mutation<Result, Partial<Note>>({
+            query: data => ({
+                url: '/note',
+                method: 'POST',
+                body: data
+            }),
+            invalidatesTags: ['notes'],
+        }),
+
         // PATCH mutation to update note to the server
         updateNote: builder.mutation<Result, IUpdateNote>({
             query: ({ noteId, data }) => ({
@@ -59,6 +69,7 @@ export const noteApi = apiSlice.injectEndpoints({
                 try {
                     await queryFulfilled;
 
+                    // emitting note deleted event to inform the server here 
                     socket.emit('note-deleted', true);
                 } catch (error) {
                     deleteResult.undo();
@@ -69,6 +80,7 @@ export const noteApi = apiSlice.injectEndpoints({
 });
 
 export const {
+    useAddNoteMutation,
     useUpdateNoteMutation,
     useDeleteNoteMutation,
 } = noteApi;

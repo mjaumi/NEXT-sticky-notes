@@ -2,63 +2,94 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { MdModeEdit, MdDone, MdDelete } from 'react-icons/md';
-import { AiFillStar } from 'react-icons/ai';
+import { AiFillStar, AiOutlinePlus } from 'react-icons/ai';
 import { motion } from 'framer-motion';
 import {
+  useAddNoteMutation,
   useDeleteNoteMutation,
   useUpdateNoteMutation,
 } from '@/redux/features/note/noteApi';
 import { toast } from 'react-toastify';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { removeNewNote } from '@/redux/features/note/noteSlice';
+import isEmptyOrWhitespace from '@/lib/isEmptyOrWhitespace';
+import moment from 'moment';
 
-const NoteItem = ({ note }: { note: Note }) => {
+const NoteItem = ({ note, isNew }: { note: Note; isNew: boolean }) => {
   // destructuring the note object here
   const { _id, noteText, bgColor, isStared, createdAt } = note;
 
   // integration of RTK Query hooks here
-  const [updateNote, { isSuccess, isError }] = useUpdateNoteMutation();
-  const [deleteNote, { isSuccess: isDeleteSuccess, isError: isDeleteError }] =
-    useDeleteNoteMutation();
+  const [updateNote, updateMutationFlags] = useUpdateNoteMutation();
+  const [deleteNote, deleteMutationFlags] = useDeleteNoteMutation();
+  const [addNote, addMutationFlags] = useAddNoteMutation();
+
+  // integration of react-redux hooks here
+  const { note: newNote } = useAppSelector((state) => state.note);
+  const dispatch = useAppDispatch();
 
   // integration of react hooks here
-  const [textareaText, setTextAreaText] = useState<string>(noteText);
-  const [isEdit, setIsEdit] = useState<boolean>(false);
-  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const [textareaText, setTextareaText] = useState<string>(noteText);
+  const [isEdit, setIsEdit] = useState<boolean>(isNew);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // taking focus to the textarea if user wants to edit it
   useEffect(() => {
     if (isEdit) {
-      textAreaRef.current?.focus();
-      textAreaRef.current?.setSelectionRange(-1, -1);
+      textareaRef.current?.focus();
+      textareaRef.current?.setSelectionRange(-1, -1);
     }
   }, [isEdit]);
 
   // showing notification using toasts to the user here
   useEffect(() => {
-    if (isSuccess) {
+    if (updateMutationFlags.isSuccess) {
       toast.success('Note Updated Successfully!!', {
         toastId: 'update-success',
       });
     }
 
-    if (isError) {
+    if (updateMutationFlags.isError) {
       toast.error('Failed To Update The Note!!', {
         toastId: 'update-error',
       });
     }
 
-    if (isDeleteSuccess) {
+    if (deleteMutationFlags.isSuccess) {
       toast.success('Note Deleted Successfully!!', {
         toastId: 'delete-success',
       });
     }
 
-    if (isDeleteError) {
+    if (deleteMutationFlags.isError) {
       toast.error('Failed To Delete The Note!!', {
         toastId: 'delete-error',
       });
     }
-  }, [isDeleteError, isDeleteSuccess, isError, isSuccess]);
+  }, [deleteMutationFlags, updateMutationFlags]);
 
+  if (addMutationFlags.isSuccess) {
+    console.log('Success');
+  }
+
+  // handler function to handle the add button click events
+  const addNoteButtonHandler = () => {
+    if (!isEmptyOrWhitespace(textareaText)) {
+      const noteToAdd: Note = {
+        noteText: textareaText,
+        category: newNote?.category as string,
+        bgColor: newNote?.bgColor as string,
+        isStared: newNote?.isStared as boolean,
+        createdAt: moment().format('LL'),
+      };
+
+      addNote(noteToAdd);
+    }
+
+    dispatch(removeNewNote());
+  };
+
+  // handler function to handle the delete button click events
   const deleteNoteButtonHandler = (noteId: string) => {
     deleteNote(noteId);
   };
@@ -72,7 +103,7 @@ const NoteItem = ({ note }: { note: Note }) => {
       };
 
       updateNote({
-        noteId: _id,
+        noteId: _id as string,
         data: noteToUpdate,
       });
     }
@@ -87,7 +118,7 @@ const NoteItem = ({ note }: { note: Note }) => {
     };
 
     updateNote({
-      noteId: _id,
+      noteId: _id as string,
       data: noteToUpdate,
     });
   };
@@ -113,11 +144,11 @@ const NoteItem = ({ note }: { note: Note }) => {
           <p className='text-lg'>{noteText}</p>
         ) : (
           <textarea
-            ref={textAreaRef}
+            ref={textareaRef}
             className='bg-transparent w-full h-full text-lg outline-none resize-none'
             name='note-textarea'
             defaultValue={noteText}
-            onChange={(e) => setTextAreaText(e.target.value)}
+            onChange={(e) => setTextareaText(e.target.value)}
           ></textarea>
         )}
       </div>
@@ -126,32 +157,53 @@ const NoteItem = ({ note }: { note: Note }) => {
           <p className='font-base text-sm'>{createdAt}</p>
         </div>
         <div>
-          <button
-            onClick={starButtonHandler}
-            className={`bg-sticky-black  p-3 rounded-full hover:scale-125 mr-3 ${
-              isStared
-                ? 'text-sticky-golden'
-                : 'text-white opacity-0 group-hover:opacity-100'
-            } duration-300`}
-          >
-            <AiFillStar className='w-5 h-5' />
-          </button>
-          <button
-            onClick={() => deleteNoteButtonHandler(_id)}
-            className='bg-sticky-black text-red-500 hover:text-white p-3 rounded-full hover:scale-125 mr-3 duration-300'
-          >
-            <MdDelete className='w-5 h-5' />
-          </button>
-          <button
-            onClick={editNoteButtonHandler}
-            className='bg-sticky-black text-white p-3 rounded-full hover:scale-125 duration-300'
-          >
-            {isEdit ? (
-              <MdDone className='w-5 h-5' />
-            ) : (
-              <MdModeEdit className='w-5 h-5' />
-            )}
-          </button>
+          {!isNew ? (
+            <>
+              <button
+                onClick={starButtonHandler}
+                className={`bg-sticky-black  p-3 rounded-full hover:scale-125 mr-3 ${
+                  isStared
+                    ? 'text-sticky-golden'
+                    : 'text-white opacity-0 group-hover:opacity-100'
+                } duration-300`}
+              >
+                <AiFillStar className='w-5 h-5' />
+              </button>
+              <button
+                onClick={() => deleteNoteButtonHandler(_id as string)}
+                className='bg-sticky-black text-red-500 hover:text-white p-3 rounded-full hover:scale-125 mr-3 duration-300'
+              >
+                <MdDelete className='w-5 h-5' />
+              </button>
+              <button
+                onClick={editNoteButtonHandler}
+                className='bg-sticky-black text-white p-3 rounded-full hover:scale-125 duration-300'
+              >
+                {isEdit ? (
+                  <MdDone className='w-5 h-5' />
+                ) : (
+                  <MdModeEdit className='w-5 h-5' />
+                )}
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={addNoteButtonHandler}
+              className={`bg-sticky-black p-2 rounded-full hover:scale-125 duration-300 ${
+                !isEmptyOrWhitespace(textareaText)
+                  ? 'text-white'
+                  : 'text-red-500'
+              }`}
+            >
+              <AiOutlinePlus
+                className={`w-6 h-6 duration-300 ${
+                  !isEmptyOrWhitespace(textareaText)
+                    ? 'rotate-0'
+                    : 'rotate-[45deg]'
+                }`}
+              />
+            </button>
+          )}
         </div>
       </div>
     </motion.div>

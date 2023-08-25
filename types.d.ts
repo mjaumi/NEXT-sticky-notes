@@ -1,6 +1,6 @@
 // defining the Note datatype here
 type Note = {
-  _id: string;
+  _id?: string;
   noteText: string;
   createdAt: string;
   isStared: boolean;

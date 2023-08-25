@@ -6,6 +6,7 @@ export const notesApi = apiSlice.injectEndpoints({
         // GET query to get all the notes from the server
         getNotes: builder.query<Note[], null>({
             query: () => '/notes',
+            providesTags: ['notes'],
         }),
     }),
 });
