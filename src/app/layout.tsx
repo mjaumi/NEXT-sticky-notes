@@ -26,9 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   // connecting socket here
-  socket.on('connect', () => {
-    console.log('connection ID: ', socket.id);
-  });
+  socket.on('connect', () => {});
 
   // rendering the layout of the web application here
   return (

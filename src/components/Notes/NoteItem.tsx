@@ -57,8 +57,6 @@ const NoteItem = ({ note, isNew }: { note: Note; isNew: boolean }) => {
     }
   }, [updateMutationFlags]);
 
-  // console.log(updateMutationFlags);
-
   // handler function to handle the add button click events
   const addNoteButtonHandler = () => {
     if (!isEmptyOrWhitespace(textareaText)) {

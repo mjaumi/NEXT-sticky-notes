@@ -8,9 +8,11 @@ import AddNoteColorButton from '../AddNoteColorButton/AddNoteColorButton';
 // defining the color button container variants here
 const containerVariants = {
   open: {
+    width: '60%',
     transition: { staggerChildren: 0.07, delayChildren: 0.2 },
   },
   closed: {
+    width: '0%',
     transition: { staggerChildren: 0.05, staggerDirection: -1 },
   },
 };
@@ -53,10 +55,13 @@ const Sidebar = () => {
 
   // rendering the sidebar component here
   return (
-    <aside className='sticky top-0 border-r w-28 px-3 py-5 h-screen'>
-      <p className='text-center font-semibold'>Sticky</p>
+    <aside className='fixed xl:sticky bottom-5 xl:top-0 xl:border-r w-full xl:w-28 px-3 py-5 xl:h-screen shadow-md xl:shadow-none z-[999]'>
+      <p className='hidden xl:block text-center font-semibold'>Sticky</p>
 
-      <div ref={scope} className='pt-14 flex flex-col items-center'>
+      <div
+        ref={scope}
+        className='py-5 xl:py-0 xl:pt-14 flex xl:flex-col justify-center items-center w-4/5 mx-auto bg-white rounded-xl'
+      >
         <button
           id='add-button'
           onClick={addNoteButtonHandler}
@@ -73,7 +78,7 @@ const Sidebar = () => {
           onAnimationComplete={() => {
             !isOpen && setHasAnimFinished(true);
           }}
-          className={`mt-8 flex flex-col items-center ${
+          className={`xl:mt-8 flex xl:flex-col justify-center items-center ${
             hasAnimFinished && 'hidden'
           }`}
         >

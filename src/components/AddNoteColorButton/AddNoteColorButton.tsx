@@ -1,11 +1,28 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useAppDispatch } from '@/redux/hooks';
 import { createNewNote } from '@/redux/features/note/noteSlice';
 
 // declaring the color button variants here
+const colorBtnVariantsMobile = {
+  open: {
+    x: 0,
+    opacity: 1,
+    transition: {
+      x: { stiffness: 1000, velocity: -100 },
+    },
+  },
+  closed: {
+    x: -50,
+    opacity: 0,
+    transition: {
+      x: { stiffness: 1000 },
+    },
+  },
+};
+
 const colorBtnVariants = {
   open: {
     y: 0,
@@ -44,9 +61,11 @@ const AddNoteColorButton = ({ bgColor }: { bgColor: string }) => {
   return (
     <motion.button
       onClick={addNoteBtnHandler}
-      variants={colorBtnVariants}
+      variants={
+        window.innerWidth < 1280 ? colorBtnVariantsMobile : colorBtnVariants
+      }
       style={{ backgroundColor: bgColor }}
-      className='mb-5 p-2 rounded-full opacity-0'
+      className='ml-5 xl:ml-0 xl:mb-5 p-2 rounded-full opacity-0'
     />
   );
 };
