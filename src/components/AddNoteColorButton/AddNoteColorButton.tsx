@@ -44,6 +44,13 @@ const AddNoteColorButton = ({ bgColor }: { bgColor: string }) => {
   // integration of react-redux custom hooks here
   const dispatch = useAppDispatch();
 
+  // integration or react hooks here
+  const [windowWidth, setWindowWidth] = useState<number>(0);
+
+  useEffect(() => {
+    setWindowWidth(window.innerWidth);
+  }, []);
+
   // handler function to add new note on click add note color button
   const addNoteBtnHandler = () => {
     const newNote: Note = {
@@ -61,9 +68,7 @@ const AddNoteColorButton = ({ bgColor }: { bgColor: string }) => {
   return (
     <motion.button
       onClick={addNoteBtnHandler}
-      variants={
-        window.innerWidth < 1280 ? colorBtnVariantsMobile : colorBtnVariants
-      }
+      variants={windowWidth < 1280 ? colorBtnVariantsMobile : colorBtnVariants}
       style={{ backgroundColor: bgColor }}
       className='ml-5 xl:ml-0 xl:mb-5 p-2 rounded-full opacity-0'
     />

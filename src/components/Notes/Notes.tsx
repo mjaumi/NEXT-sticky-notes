@@ -5,6 +5,7 @@ import NoteItem from './NoteItem';
 import { useGetNotesQuery } from '@/redux/features/notes/notesApi';
 import { useAppSelector } from '@/redux/hooks';
 import { socket } from '@/lib/socketConnection';
+import SearchBar from '../SearchBar/SearchBar';
 
 const Notes = () => {
   // integration of RTK Query hooks here
@@ -22,10 +23,13 @@ const Notes = () => {
 
   // rendering the notes container component here
   return (
-    <section className='w-full px-5 md:px-10 2xl:px-20 py-5'>
-      <div className='pt-10 md:pt-20'>
+    <section className='w-full py-5'>
+      <div>
+        <SearchBar />
+      </div>
+      <div className='pt-32 xl:pt-20 px-5 md:px-10 2xl:px-20'>
         <h1 className='text-5xl font-semibold'>Notes</h1>
-        <div className='mt-20 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5 2xl:gap-12'>
+        <div className='mt-8 md:mt-20 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5 2xl:gap-12'>
           {noteData.note && <NoteItem note={noteData.note} isNew />}
           {notes &&
             [...notes]
