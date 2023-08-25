@@ -1,10 +1,13 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { MdModeEdit, MdDone } from 'react-icons/md';
+import { MdModeEdit, MdDone, MdDelete } from 'react-icons/md';
 import { AiFillStar } from 'react-icons/ai';
 import { motion } from 'framer-motion';
-import { useUpdateNoteMutation } from '@/redux/features/note/noteApi';
+import {
+  useDeleteNoteMutation,
+  useUpdateNoteMutation,
+} from '@/redux/features/note/noteApi';
 import { toast } from 'react-toastify';
 
 const NoteItem = ({ note }: { note: Note }) => {
@@ -13,6 +16,8 @@ const NoteItem = ({ note }: { note: Note }) => {
 
   // integration of RTK Query hooks here
   const [updateNote, { isSuccess, isError }] = useUpdateNoteMutation();
+  const [deleteNote, { isSuccess: isDeleteSuccess, isError: isDeleteError }] =
+    useDeleteNoteMutation();
 
   // integration of react hooks here
   const [textareaText, setTextAreaText] = useState<string>(noteText);
@@ -36,11 +41,27 @@ const NoteItem = ({ note }: { note: Note }) => {
     }
 
     if (isError) {
-      toast.error('Failed Update The Note!!', {
+      toast.error('Failed To Update The Note!!', {
         toastId: 'update-error',
       });
     }
-  }, [isError, isSuccess]);
+
+    if (isDeleteSuccess) {
+      toast.success('Note Deleted Successfully!!', {
+        toastId: 'delete-success',
+      });
+    }
+
+    if (isDeleteError) {
+      toast.error('Failed To Delete The Note!!', {
+        toastId: 'delete-error',
+      });
+    }
+  }, [isDeleteError, isDeleteSuccess, isError, isSuccess]);
+
+  const deleteNoteButtonHandler = (noteId: string) => {
+    deleteNote(noteId);
+  };
 
   // handler function to handle the edit button click events
   const editNoteButtonHandler = () => {
@@ -114,6 +135,12 @@ const NoteItem = ({ note }: { note: Note }) => {
             } duration-300`}
           >
             <AiFillStar className='w-5 h-5' />
+          </button>
+          <button
+            onClick={() => deleteNoteButtonHandler(_id)}
+            className='bg-sticky-black text-red-500 hover:text-white p-3 rounded-full hover:scale-125 mr-3 duration-300'
+          >
+            <MdDelete className='w-5 h-5' />
           </button>
           <button
             onClick={editNoteButtonHandler}

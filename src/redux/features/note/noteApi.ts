@@ -11,7 +11,7 @@ interface IUpdateNote {
 // initializing the note APIs here
 export const noteApi = apiSlice.injectEndpoints({
     endpoints: builder => ({
-        // PATCH mutation to note to the server
+        // PATCH mutation to update note to the server
         updateNote: builder.mutation<Result, IUpdateNote>({
             query: ({ noteId, data }) => ({
                 url: `/note/${noteId}`,
@@ -37,9 +37,38 @@ export const noteApi = apiSlice.injectEndpoints({
                 }
             }
         }),
+
+        // DELETE mutation to delete note from the server
+        deleteNote: builder.mutation<DeleteResult, string>({
+            query: noteId => ({
+                url: `/note/${noteId}`,
+                method: 'DELETE',
+            }),
+
+            // deleting notes from redux store with optimistic approach here
+            async onQueryStarted(noteId, { queryFulfilled, dispatch }) {
+                let deleteResult = dispatch(
+                    notesApi.util.updateQueryData('getNotes', null,
+                        draftNotes => {
+                            const deletedNoteIndex = draftNotes.findIndex(note => note._id === noteId);
+                            draftNotes.splice(deletedNoteIndex, 1);
+                        }
+                    ),
+                );
+
+                try {
+                    await queryFulfilled;
+
+                    socket.emit('note-deleted', true);
+                } catch (error) {
+                    deleteResult.undo();
+                }
+            }
+        }),
     }),
 });
 
 export const {
     useUpdateNoteMutation,
+    useDeleteNoteMutation,
 } = noteApi;

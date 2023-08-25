@@ -13,3 +13,9 @@ type Result = {
   status: 'success' | 'error',
   body: Note,
 }
+
+// defining the delete result datatype here
+type DeleteResult = {
+  status: 'success' | 'error',
+  body: Partial<Note>,
+}

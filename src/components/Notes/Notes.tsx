@@ -11,7 +11,7 @@ const Notes = () => {
   const { data: notes, refetch } = useGetNotesQuery(null);
 
   // refetching the notes when the socket io is emitting updated note
-  socket.on('receive-updated-note', () => {
+  socket.onAny(() => {
     refetch();
   });
 
